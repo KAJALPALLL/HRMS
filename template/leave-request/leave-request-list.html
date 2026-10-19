@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+{% if not request.user.is_superuser %}
+<a href="{% url 'add_leave_request' %}">
+    <button class="btn btn-primary mr-5" style="float:right;">Add</button>
+</a>
+
+{% else %}
+{% endif %}
+
+
+<h4 class="text-center">Leave Requests</h4>
+
+{% if request.user.is_superuser %}
+
+<div class="row">
+    <div class="col">
+        <div class="col">
+        <h6 class="ml-2 font-weight-bold text-primary">Search:
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="" method="get">
+                <div class="input-group">
+                    {{filter.form.employee__username}}
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </h6>
+    </div>
+
+    </div>
+
+</div>
+{% else %}
+    {% endif %}
+
+
+<div class="container-fluid">
+<div class="card m-3 p-3">
+    <div class="table-responsive">
+        <table class="table table-bordered text-center">
+            <tr>
+<!--                <th>Id</th>-->
+                <th>Leave Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                {% if request.user.is_superuser %}
+                <th>Employee</th>
+                <th>Remaining Leaves</th>
+                {% else %}
+                {% endif %}
+                <th>Days</th>
+                <th>Approved By</th>
+                <th>Approved Date</th>
+                <th>Leave Reason</th>
+                <th>Status</th>
+
+
+            </tr>
+
+            {% for data in data %}
+
+            <tr>
+<!--                <td>{{data.id}}</td>-->
+                <td>{{data.leave_type}}</td>
+                <td>{{data.start_date}}</td>
+                <td>{{data.end_date}}</td>
+                {% if request.user.is_superuser %}
+                <td>{{data.employee}}</td>
+                <td><a href="{% url 'employee_leave_list' data.employee_id %}"><button class="btn btn-primary">Leaves</button></a></td>
+                {% else %}
+                {% endif %}
+
+                <td>{{data.days}}</td>
+                <td>{{data.approved_by}}</td>
+                <td>{{data.approved_date}}</td>
+                <td>{{data.leave_reason}}</td>
+                <td>
+                    {% if request.user.is_superuser %}
+                    {% if data.status == "rejected" %}
+                    <button class="btn btn-danger">Rejected</button>
+                    {% elif data.status == "approved" %}
+                    <button class="btn btn-success">Approved</button>
+                    {% else %}
+                    <form action="{% url 'update_leave_request_status' data.id %}" method="post">
+                        {% csrf_token %}
+                        <select  class="form-control" onchange="this.form.submit()" name="status">
+                            <option value="pending" >pending</option>
+                            <option value="approved" > approved</option>
+                            <option value="rejected" >rejected</option>
+                        </select>
+                    </form>
+                    {% endif %}
+                    {% else %}
+                    {% if data.status == "rejected" %}
+                    <button class="btn btn-danger">Rejected</button>
+                    {% elif data.status == "approved" %}
+                    <button class="btn btn-success">Approved</button>
+                    {% elif data.status == "pending" %}
+                    <button class="btn btn-warning">Pending</button>
+                    {% else %}
+                    {% endif %}
+
+
+                    {% endif %}
+                </td>
+
+
+
+
+            </tr>
+
+            {% endfor %}
+
+            </table>
+    </div>
+</div>
+
+
+
+<div class="pagination">
+
+    {% if data.has_previous %}
+    <a href="?page={{data.previous_page_number}}" class="arrow" id="left"><i class="fas fa-angle-left"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-left"></i></a>
+    {% endif %}
+
+    {% for i in data.paginator.page_range %}
+    {% if data.number == i %}
+    <a href="#" class="active">{{i}}</a>
+    {% else %}
+    <a href="#" class="">{{i}}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if data.has_next %}
+    <a href="?page={{ data.next_page_number }}" class="arrow" id="right"><i class="fas fa-angle-right"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-right"></i></a>
+    {% endif %}
+
+</div>
+
+
+<style>
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 7px 12px;
+  margin: 0 5px;
+  background-color: #e6ddc4;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #181d31;
+  font-weight: small;
+}
+
+
+.pagination a:hover {
+  background-color:  #0F67B1;
+  color: white;
+}
+
+
+.pagination i {
+  font-size: 18px;
+}
+
+.pagination .active {
+  background-color:  #0F67B1;
+  color: white;
+}
+</style>
+
+
+<script>
+const paginationLinks = document.querySelectorAll(".pagination a");
+let currentIndex = 0;
+
+paginationLinks.forEach((link, index) => {
+  if (link.classList.contains("active")) {
+    currentIndex = index;
+  }
+
+  link.addEventListener("click", () => {
+    if (link.classList.contains("arrow")) {
+      if (link.id === "left") {
+        currentIndex = Math.max(currentIndex 1, 0);
+      } else {
+        currentIndex = Math.min(currentIndex + 1, paginationLinks.length - 2);
+      }
+    } else {
+      currentIndex = index;
+    }
+    paginationLinks.forEach((link) => link.classList.remove("active"));
+    paginationLinks[currentIndex-1].classList.add("active");
+  });
+});
+
+
+</script>
+
+
+
+
+
+    </div>
+
+
+{% endblock %}

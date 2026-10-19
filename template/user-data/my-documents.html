@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+<h4 class="text-center">Documents</h4>
+
+<div class="row">
+    <div class="col">
+        <a href="{% url 'add_documents' %}" style="float:right;margin-right:40px;">
+            <button class="btn btn-primary">Add</button>
+        </a>
+    </div>
+</div>
+
+
+
+
+<div class="container-fluid">
+<div class="card m-3 text-center p-3">
+    <div class="table-responsive">
+        <table class="table table-bordered ">
+        <tr>
+            <th>Id</th>
+            <th>Document Name</th>
+            <th>Document Image</th>
+
+            <th>Datetime</th>
+        </tr>
+
+        {% for data in data %}
+
+        <tr>
+            <td>{{data.id}}</td>
+            <td>{{data.name}}</td>
+            <td><img src="{{data.image.url}}" style="height:80px;width:80px;"></td>
+
+            <td>{{data.datetime}}</td>
+<!--            <td>-->
+<!--                <a href="{% url 'update_leave_type' data.id %}"><i class="fa fa-edit" style="font-size:30px;"></i></a>-->
+<!--                <a href="#" aria-hidden="true" data-toggle="modal" data-target="#myModal{{data.id}}"><i class="fa fa-trash" style="font-size:30px;color:red;"></i></a>-->
+
+
+<!--             <div class="modal fade" id="myModal{{data.id}}" role="dialog">-->
+<!--                 <div class="modal-dialog">-->
+<!--                     <div class="modal-content">-->
+<!--                         <div class="modal-header">-->
+<!--                             <h5>Are you sure?</h5>-->
+<!--                             <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                         </div>-->
+<!--                         <div class="modal-body">-->
+<!--                             <p>Are you really want to delete the teacher role having id = {{data.id}} ?</p>-->
+<!--                         </div>-->
+<!--                         <div class="modal-footer">-->
+<!--                             <div>-->
+<!--                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>-->
+<!--                             </div>-->
+<!--                             <a  class="btn btn-danger" href="#"><strong>Delete</strong></a></div>-->
+<!--                     </div>-->
+<!--                 </div>-->
+<!--             </div>-->
+<!--            </td>-->
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

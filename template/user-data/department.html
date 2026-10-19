@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+<h4 class="text-center">Department</h4>
+
+
+
+
+<div class="container-fluid">
+
+<div class="card m-3 text-center p-3">
+    <div class="table-responsive">
+    <table class="table table-bordered ">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Open</th>
+            <th>Closed</th>
+            <th>Tickets</th>
+        </tr>
+
+        {% for data in department_status_data %}
+
+        <tr>
+            <td>{{data.data.id}}</td>
+            <td>{{data.data.name}}</td>
+            <td>{{data.open_status}}</td>
+            <td>{{data.close_status}}</td>
+
+
+            <td><a href="{% url 'client_tickets' id data.data.id %}"><button class="btn btn-primary">View</button></a></td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

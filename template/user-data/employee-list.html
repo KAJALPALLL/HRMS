@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<h4 class="text-center">Employees</h4>
+
+<div class="row">
+    <div class="col">
+        <a href="{% url 'add_employee' %}" style="float:right;margin-right:40px;">
+            <button class="btn btn-primary">Add New</button>
+        </a>
+            <a href="#" aria-hidden="true" data-toggle="modal" data-target="#myModals{{data.id}}" class="btn btn-success" style="float:right;margin-right:10px;">Export</a>
+
+    </div>
+
+
+</div>
+
+
+
+
+             <div class="modal fade" id="myModals{{data.id}}" role="dialog">
+                 <div class="modal-dialog">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h5>Export Leaves</h5>
+                             <button type="button" class="close" data-dismiss="modal">&times;</button>
+                         </div>
+                         <div class="modal-body">
+                             <form action="{% url 'export_leave' %}" method="post">
+                                 {% csrf_token %}
+                                 <div class="row">
+                                     <div class="col">
+                                         <label>Start Date:</label>
+                                            <input type="date" name="start_date">
+                                     </div>
+                                     <div class="col">
+                                         <label>End Date:</label>
+                                            <input type="date" name="end_date">
+                                     </div>
+                                 </div>
+                         </div>
+                         <div class="modal-footer">
+
+                             <button type="submit" class="btn btn-success">Export</button>
+                             </form>
+                         </div>
+                     </div>
+
+                 </div>
+             </div>
+
+
+<div class="container-fluid">
+<div class="card m-3 text-center p-3">
+    <div class="table-responsive">
+        <table class="table table-bordered ">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Assign leaves</th>
+            <th>Image</th>
+            <th>Documents</th>
+
+            <th>Actions</th>
+        </tr>
+
+        {% for data in data %}
+
+        <tr>
+            <td>{{data.id}}</td>
+            <td>{{data.username}}</td>
+            <td>{{data.calling_number}}</td>
+            <td><a href="{% url 'employee_leave_list' data.id %}"><button class="btn btn-primary"> Leaves</button></a></td>
+            <td><img src="media/{{data.profile_image}}" style="height:50px;width:50px;"></td>
+            <td><a href="{% url 'employee_document_list' data.id %}"><button class="btn btn-primary"> Documents</button></a></td>
+            <td>
+                <a href="{% url 'update_employee' data.id %}"><i class="fa fa-edit" style="font-size:30px;"></i></a>
+                <a href="#" aria-hidden="true" data-toggle="modal" data-target="#myModal{{data.id}}"><i class="fa fa-trash" style="font-size:30px;color:red;"></i></a>
+
+
+             <div class="modal fade" id="myModal{{data.id}}" role="dialog">
+                 <div class="modal-dialog">
+                     <div class="modal-content">
+                         <div class="modal-header">
+                             <h5>Are you sure?</h5>
+                             <button type="button" class="close" data-dismiss="modal">&times;</button>
+                         </div>
+                         <div class="modal-body">
+                             <p>Are you really want to delete the employee having id = {{data.id}} ?</p>
+                         </div>
+                         <div class="modal-footer">
+                             <div>
+                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                             </div>
+                             <a  class="btn btn-danger" href="{% url 'delete_employee' data.id %}"><strong>Delete</strong></a></div>
+                     </div>
+                 </div>
+             </div>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    </div>
+
+
+
+
+
+</div>
+
+
+<div class="pagination">
+
+    {% if data.has_previous %}
+    <a href="?page={{data.previous_page_number}}" class="arrow" id="left"><i class="fas fa-angle-left"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-left"></i></a>
+    {% endif %}
+
+    {% for i in data.paginator.page_range %}
+    {% if data.number == i %}
+    <a href="#" class="active">{{i}}</a>
+    {% else %}
+    <a href="#" class="">{{i}}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if data.has_next %}
+    <a href="?page={{ data.next_page_number }}" class="arrow" id="right"><i class="fas fa-angle-right"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-right"></i></a>
+    {% endif %}
+
+</div>
+
+
+<style>
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 7px 12px;
+  margin: 0 5px;
+  background-color: #e6ddc4;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #181d31;
+  font-weight: small;
+}
+
+
+.pagination a:hover {
+  background-color:  #0F67B1;
+  color: white;
+}
+
+
+.pagination i {
+  font-size: 18px;
+}
+
+.pagination .active {
+  background-color:  #0F67B1;
+  color: white;
+}
+</style>
+
+
+<script>
+const paginationLinks = document.querySelectorAll(".pagination a");
+let currentIndex = 0;
+
+paginationLinks.forEach((link, index) => {
+  if (link.classList.contains("active")) {
+    currentIndex = index;
+  }
+
+  link.addEventListener("click", () => {
+    if (link.classList.contains("arrow")) {
+      if (link.id === "left") {
+        currentIndex = Math.max(currentIndex 1, 0);
+      } else {
+        currentIndex = Math.min(currentIndex + 1, paginationLinks.length - 2);
+      }
+    } else {
+      currentIndex = index;
+    }
+    paginationLinks.forEach((link) => link.classList.remove("active"));
+    paginationLinks[currentIndex-1].classList.add("active");
+  });
+});
+
+
+</script>
+
+</div>
+
+
+{% endblock %}

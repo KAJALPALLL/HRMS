@@ -1,0 +1,470 @@
+{% extends "base.html" %}
+{% load static%}
+{% block content %}
+ <!-- Topbar -->
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+<h2 class="text-center">Ticket Conversation</h2>
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- jQuery code to show
+      the working of this method -->
+<div class="container">
+    <!-- Page header start -->
+
+    <!-- Page header end -->
+
+    <!-- Content wrapper start -->
+    <div class="content-wrapper" >
+        <div class="card p-3 m-3">
+            <div class="row">
+                <div class="col-6">
+                    Query -
+                    {{ticket_data.description}}
+                </div>
+
+                <div class="col">
+
+                    {% if ticket_data.priority == 1 %}
+                    <h5 class="text-danger">Priority - High</h5>
+                    {% elif ticket_data.priority == 2 %}
+                    <h5 class="text-warning">Priority - Medium</h5>
+                    {% else %}
+                        <h5 class="text-secondary">Priority - Low</h5>
+                    {% endif %}
+                </div>
+
+                <div class="col">
+
+                    <form method="post" action="{% url 'update_ticket_status' ticket_data.id %}">
+                                {% csrf_token %}
+                                    Status -
+                                <select name="status" onchange="form.submit()">
+                                    {% if ticket_data.status == 'open' %}
+                                    <option value="open"selected>Open</option>
+                                    <option value="close">Close</option>
+                                    {% elif ticket_data.status == 'close' %}
+                                    <option value="close" selected>Close</option>
+                                    <option value="open">Open</option>
+                                    {% endif %}
+                                </select>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3 ml-4">
+            <button type="button" class="btn btn-primary "  aria-hidden="true" data-toggle="modal" data-target="#image_modal" onclick='ViewImageFunction("{{ticket_data.image.url}}")'>
+                <img style="height:40px;width:40px;" src="{{ticket_data.image.url}}"/>
+            </button>
+        </div>
+
+
+
+        <!-- Row start -->
+                    <div class="row no-gutters">
+<!---lg-6 col-md-6 col-sm-6-->
+                        <div class="col p-3" style="background-color: #ECE1DF; height:50%;">
+                            <div class="chat-container">
+                              <nav> <ul id="table_body">
+
+                            {% for data in data %}
+                              <li class="chat-left">
+<!--                                  <div class="chat-avatar">-->
+<!--                                      <div class="chat-name text-left"></div>-->
+<!--                                      <div class="chat-name text-left">-->
+
+<!--                                      </div>-->
+<!--                                  </div>-->
+                                  <div class="chat-text"  >
+                                      <div class="chat-name" style="display:flex;" >
+                                          <p style="float:right;">
+                                              {% if data.employee_id %}
+                                              {{data.employee.first_name}} : ({{data.datetime}})
+                                          {% else %}
+                                              {{data.client.username}} : ({{data.datetime}})
+                                          {% endif %}</p>
+
+                                          {% if request.user.is_superuser %}
+
+                                              <p ><a href="{% url 'delete_conversation' data.id id %}"><i class="btn btn-outline-danger  btn-sm mx-5 fa fa-trash" ></i></a></p>
+                                          {% else %}
+                                          {% endif %}
+
+
+                                      </div>
+
+                                      {% if data.mimetype == 'text' %}
+                                      <p class="card" style="background-color:baseline;padding:20px;margin-right:50px;">{{data.text}}</p>
+
+                                      {% elif data.mimetype == 'image' %}
+
+                                      <p class="card" style="background-color:baseline;padding:20px;margin-right:50px;">
+                                      <a href="{{data.image.url}}"  target="_blank"> Image</a>
+                                      </p>
+                                      <button type="button" class="btn btn-success"  aria-hidden="true" data-toggle="modal" data-target="#image_modal" onclick='ViewImageFunction("{{data.image.url}}")'><i class="fa fa-eye"></i>
+                                      </button>
+
+                                      {% elif data.mimetype == 'video/mp4' %}
+
+                                      <p class="card" style="background-color:baseline;padding:20px;margin-right:50px;">
+                                      <a href="{{data.image.url}}" target="_blank">
+                                       Video </a>
+                                      </p>
+                                      <button type="button" class="btn btn-success"  aria-hidden="true" data-toggle="modal" data-target="#video_modal{{data.id}}" ><i class="fa fa-eye"></i></button>
+                                        {% endif %}
+
+                                  </div>
+                              </li>
+                                    {% endfor %}
+
+
+                                  <hr>
+
+
+                                  <form action="{% url 'add_conversation' %}" style="display:flex;justify-content:space-evenly;" enctype="multipart/form-data" method="POST" onsubmit="openModal()" id="myForm">
+                                    {% csrf_token %}
+                                        <label style="margin:5px; padding:5px;"> Message: </label>
+
+                                      <input type="text" class="form-control" style="width:70%;margin:5px; padding:5px;" name="text">
+                                      <input type="hidden" name="mimetype" value="text">
+                                      <input type="hidden" name="ticket_id" value="{{id}}">
+
+                                      <button  class="btn btn-success" style="margin:5px; padding:5px;" type="submit">Send</button>
+                                  </form>
+
+
+<!--                                      <a href="#" aria-hidden="true" data-toggle="modal" data-target="#myModal">-->
+<!--                                          <button  class="btn btn-success" style="margin:5px; padding:5px;" type="submit" aria-hidden="true" data-toggle="modal" data-target="#myModal">Send</button>-->
+<!--                                      </a>-->
+
+
+<!--                                     <div class="modal fade" id="myModal" role="dialog">-->
+<!--                                         <div class="modal-dialog">-->
+<!--                                             <div class="modal-content">-->
+
+<!--                                                 <div class="modal-body">-->
+<!--                                                     <img src="{% static 'img/tick.png' %}" style="height:200px;height:100px;margin:50px;margin-left:180px;"></img>-->
+<!--                                                     <p>Your ticket has been raised.</p>-->
+<!--                                                     <p> Please wait for some time to solve this ticket.I hope you understand...</p>-->
+<!--                                                 </div>-->
+<!--                                             </div>-->
+<!--                                         </div>-->
+<!--                                     </div>-->
+
+
+
+
+
+                                  <div class="modal fade" tabindex="-1" role="dialog" id="myModal">
+                                          <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                 <div class="modal-body">
+                                                     <img src="{% static 'img/correct.png' %}" style="height:200px;height:100px;margin:50px;margin-left:180px;"></img>
+                                                     <p>Your ticket has been raised.</p>
+                                                     <p> Please wait for some time to solve this ticket.I hope you understand...</p>
+                                                 </div>
+                                                <div class="modal-footer">
+                                                    <a href="#" class="btn btn-primary" data-dismiss="modal">Cancel</a>
+                                                </div>
+
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                  <div style="display:flex;">
+                                      <h7 style="margin:5px; padding:5px;">Send Files: </h7>
+<!--                                      <div style="border:1px solid grey; margin:5px; padding:5px; border-radius:5px;">-->
+<!--                                          PDF-->
+<!--                                      <a href="#" data-toggle="modal" style="margin-left:10px;margin-right:10px;" data-target="#pdf_upload_modal">-->
+<!--                                          <i class="fa fa-file-pdf-o" style="margin-left:10px;margin-right:10px;" aria-hidden="true"></i>-->
+<!--                                      </a></div>-->
+                                      <div style="border:1px solid grey; margin:5px; padding:5px; border-radius:5px;">
+                                          Video
+                                      <a href="#" data-toggle="modal" style="margin-left:10px;margin-right:10px;" data-target="#video_upload_modal">
+                                          <i class="fa fa-file-video-o" style="margin-left:10px;margin-right:10px;"aria-hidden="true"></i>
+                                      </a></div>
+                                      <div style="border:1px solid grey; margin:5px; padding:5px; border-radius:5px;">
+                                          Image
+                                      <a href="#" data-toggle="modal" style="margin-left:10px;margin-right:10px;" data-target="#image_upload_modal">
+                                          <i class="fa fa-file-image-o" style="margin-left:10px;margin-right:10px;" aria-hidden="true"></i>
+                                      </a></div>
+<!--                                      <div style="border:1px solid grey; margin:5px; padding:5px; border-radius:5px;">-->
+<!--                                          Assignment-->
+<!--                                      <a href="#" data-toggle="modal" style="margin-left:10px;margin-right:10px;" data-target="#assignment_upload_modal">-->
+<!--                                          <i class="fa fa-file-pdf-o" style="margin-left:10px;margin-right:10px;" aria-hidden="true"></i>-->
+<!--                                      </a></div>-->
+                                  </div>
+
+                   <div class="modal fade" id="video_upload_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" >Choose File to send</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                          <form action="{% url 'add_conversation' %}" enctype="multipart/form-data" method="POST" >
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            Choose Video File
+                            <input type="file" accept="video/mp4" name="image">
+                            <input type="hidden" name="ticket_id" value="{{id}}">
+                            <input type="hidden"  class="form-input" name="mimetype" value="video/mp4">
+                        </div>
+                        <div class="modal-footer">
+                            <button  class="btn btn-primary" type="submit" >Send File</button>
+                        </div>
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+                   <div class="modal fade" id="image_upload_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" >Choose File to send</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                          <form action="{% url 'add_conversation' %}" enctype="multipart/form-data" method="POST">
+                            <div class="modal-body">
+                                {% csrf_token %}
+                                Choose Image File
+                                <input type="hidden" name="ticket_id" value="{{id}}">
+                                <input type="file" accept="image/png,image/jpeg,image/jpg" name="image">
+                                <input type="hidden"  class="form-input" name="mimetype" value="image">
+                            </div>
+                            <div class="modal-footer">
+                                <button  class="btn btn-primary" type="submit">Send File</button>
+                            </div>
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal fade" id="assignment_upload_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" >Please fill details for assignment</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                          <form action="" enctype="multipart/form-data" method="POST">
+                            <div class="modal-body">
+                                {% csrf_token %}
+                                Assignment Title:
+                                <input type="text" class="form-control" name="text_message"><br>
+                                Choose Assignment File:
+                                <input type="file" accept="application/pdf" name="file">
+                                <input type="hidden"  class="form-input" name="mime_type" value="application/pdf">
+                                <input type="hidden"  class="form-input" name="message_type" value="assignment">
+                            </div>
+                            <div class="modal-footer">
+                                <button  class="btn btn-primary" type="submit">Send Assignment</button>
+                            </div>
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+                   <div class="modal fade" id="pdf_upload_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" >Choose File to send</h5>
+                          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+
+                            <form action="" enctype="multipart/form-data" method="POST">
+                        <div class="modal-body">
+                                {% csrf_token %}
+                                Choose PDF File
+                                <input type="file" accept="application/pdf" name="file">
+                                <input type="hidden"  class="form-input" name="mime_type" value="application/pdf">
+                        </div>
+                        <div class="modal-footer">
+                            <button  class="btn btn-primary" type="submit">Send File</button>
+
+                        </div>
+                          </form>
+                      </div>
+                    </div>
+                  </div>
+
+                     </ul>
+                       </div>
+                       </nav>
+                       </div>
+
+<!--                            <div class="col-lg-5 col-md-5 col-sm-5 ml-1" style="background-color: #ECE1DF; height:50%;">-->
+<!--                                <div class="chat-container">-->
+<!--                                      <nav>-->
+<!--                                          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">-->
+<!--                                              <thead>-->
+<!--                                                    <tr>-->
+<!--                                                        <th>ID</th>-->
+<!--                                                        <th>Assignment</th>-->
+<!--                                                        <th>User Remarks</th>-->
+<!--                                                        <th>User Answer</th>-->
+<!--                                                    </tr>-->
+<!--                                              </thead>-->
+<!--                                          <tbody>-->
+<!--                                          {% for data in assignment_objects %}-->
+<!--                                                <tr>-->
+<!--                                                    <td>{{data.id}}</td>-->
+<!--                                                    <td> {% if data.chat_media %} <a href="{{data.chat_media.url}}" target="_blank">{{data.text}}</a>{% endif %}</td>-->
+<!--                                                    <td>{% if data.answer %} {% if data.answer.text %}{{data.answer.text}}{% endif %}{% endif %}</td>-->
+<!--                                                    <td>{% if data.answer %} {% if data.answer.chat_media %}<a href="{{data.answer.chat_media.url}}" target="_blank">Assignment Answer</a>{% endif %}{% endif %}</td>-->
+<!--                                                </tr>-->
+<!--                                            {% endfor %}-->
+<!--                                          </tbody>-->
+<!--                                          </table>-->
+
+
+<!--                                      </nav>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+        <!-- Row end -->
+<!--          </div>-->
+                <div class="modal fade" id="image_modal" role="dialog">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                            <div class="modal-body">
+                                <img style="width:100%" id="modal_image" src="#">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                                    {% for data in data %}
+                                        {% if data.mimetype == 'video/mp4' %}
+                                        <div class="modal fade" id="video_modal{{data.id}}" role="dialog">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <div class="modal-body">
+                                                          <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+                                                          <video
+                                                            id="my-video"
+                                                            class="video-js"
+                                                            controls
+                                                            preload="auto"
+                                                            width="400px;"
+                                                            height="225px;"
+                                                            data-setup="{}"
+                                                          >
+                                                           {% if data.image %} <source src="{{data.image.url}}" type="video/mp4" />{% endif %}
+                                                          </video>
+                                                          <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {% endfor %}
+                                <div class="modal fade" id="pdf_modal" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <div class="modal-body">
+                                                <embed id="modal_pdf" src="#" frameborder="0" width="100%" height="400px">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    <!-- Content wrapper end -->
+ <div id="bot"></div>
+</div>
+
+
+
+<script>
+function ViewImageFunction(media_path) {
+             document.getElementById('modal_image').src=media_path;
+              return false;
+            }
+
+
+</script>
+
+<!--<script>-->
+<!--    $('#myForm').on('submit', function(e){-->
+<!--  $('#myModal').modal('show');-->
+<!--  e.preventDefault();-->
+<!--});-->
+<!--</script>-->
+
+<script>
+    // Intercept form submission
+    $('#myForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        // Submit form data via AJAX
+        $.ajax({
+            url: $(this).attr('action'), // URL defined in the form action
+            type: 'POST',
+            data: new FormData(this), // Serialize the form data
+            processData: false, // Don't process the data (required for FormData)
+            contentType: false, // Don't set content-type (required for FormData)
+            success: function(response) {
+                // Show modal when form is successfully submitted
+                $('#myModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                // Handle any errors that occur during form submission
+                alert("There was an error submitting the form. Please try again.");
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+<!--<script>-->
+<!--function ViewPDFFunction(media_path) {-->
+<!--        console.log(media_path);-->
+<!--        var base_url = '{{MEDIA_URL}}';-->
+<!--        console.log(base_url);-->
+<!--        var complete_url = base_url.concat(media_path);-->
+<!--        console.log(complete_url);-->
+<!--&lt;!&ndash;        complete_url = "https://pla.gyanouspro.com/media/bifurcation/pdf/Haryana_ADA_DDA_DA_Pre_Bifurcation_With_Cover_Page_01.04.2023.pdf";&ndash;&gt;-->
+<!--&lt;!&ndash;        complete_url = "http://192.168.1.179:7000/media/chat_media/dummy.pdf"&ndash;&gt;-->
+<!--        document.getElementById('modal_pdf').src=complete_url;-->
+<!--        return false;-->
+<!--            }-->
+<!--</script>-->
+
+    <script>
+        function autoRefresh() {
+            window.location = window.location.href;
+        }
+        setInterval('autoRefresh()', 600000);
+    </script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+
+
+<link href="{% static 'sb/css/livechat.css' %}" rel="stylesheet">
+
+        </div>
+</div>
+
+{% endblock %}

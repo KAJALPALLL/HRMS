@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+
+<h4 class="text-center">Remaining Leaves</h4>
+<div class="container-fluid">
+
+<div class="card m-3 text-center p-3">
+    <div class="table-responsive">
+        <table class="table table-bordered ">
+        <tr>
+            <th>Id</th>
+            <th>Leave Type</th>
+            <th>Remaining Leave</th>
+            <th>History</th>
+
+        </tr>
+
+        {% for data in data %}
+
+        <tr>
+            <td>{{data.id}}</td>
+            <td>{{data.leave_type}}</td>
+            <td>{{data.values}}</td>
+            <td><a href="{% url 'leave_history_list' data.id %}"><button class="btn btn-primary">View</button></a></td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    </div>
+</div>
+</div>
+
+
+{% endblock %}

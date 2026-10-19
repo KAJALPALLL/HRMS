@@ -1,0 +1,940 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Alponix HRMS</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>-->
+
+    <!-- Custom styles for this template-->
+    <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+
+<!--                <div class="sidebar-brand-icon rotate-n-15">-->
+<!--                    <i class="fas fa-laugh-wink"></i>-->
+<!--                </div>-->
+
+                <div class="sidebar-brand-text mx-3">Alponix HRMS</div>
+            </a>
+
+<!--            <div class="text-center">-->
+<!--                <a href="{% url 'pip_data' %}" >-->
+<!--                <button class="btn btn-primary">Toggle PIP Mode</button>-->
+<!--                </a>-->
+<!--            </div>-->
+
+<!--            <button id="popupbtn" title="Toggle PIP Mode" class="btn btn-primary">On</button>-->
+
+<!--            <div id="short-screen" style="display:none;">-->
+<!--                <div id="timer">-->
+<!--                <h1>Open Ticket =  {{tickets}}</h1>-->
+<!--                    <h1>Open Task = {{tasks}}</h1>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            {% if not request.user.groups.first.name == 'client' %}
+            <div class="text-center">
+                <button id="pipToggleButton" title="Toggle PIP Mode" class="btn btn-primary">Toggle PIP Mode</button>
+            </div>
+            {% else %}
+            {% endif %}
+
+<button id="popupbtn" title="Toggle PIP Mode" class="btn btn-primary" style="display:none;">On</button>  <!-- Hidden "On" Button -->
+
+
+<div id="short-screen" style="display:none;">
+    <div id="timer">
+
+        <h1>Open Ticket = <span id="ticket-count">0</span></h1>
+        <h1>Open Task = <span id="task-count">0</span></h1>
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+<!--            <li class="nav-item active">-->
+<!--                <a class="nav-link" href="#">-->
+<!--                    <i class="fas fa-fw fa-tachometer-alt"></i>-->
+<!--                    <span>Dashboard</span></a>-->
+<!--            </li>-->
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+<!--            <div class="sidebar-heading">-->
+<!--                Interface-->
+<!--            </div>-->
+
+            <!-- Nav Item - Pages Collapse Menu -->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"-->
+<!--                    aria-expanded="true" aria-controls="collapseTwo">-->
+<!--                    <i class="fas fa-fw fa-cog"></i>-->
+<!--                    <span>Department</span>-->
+<!--                </a>-->
+<!--                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">-->
+<!--                    <div class="bg-white py-2 collapse-inner rounded">-->
+<!--                        <h6 class="collapse-header"></h6>-->
+<!--&lt;!&ndash;                        <a class="collapse-item" href="#">Add Blog</a>&ndash;&gt;-->
+<!--                        <a class="collapse-item" href="#">Courses</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+
+            {% if request.user.is_superuser %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Leave Manage</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Leave:</h6>
+                        <a class="collapse-item" href="{% url 'leave_list' %}"> Leave Type</a>
+                        <a class="collapse-item" href="{% url 'leave_request_list' %}"> Leave Request</a>
+<!--                        <a class="collapse-item" href="{% url 'employee_list' %}">Employee </a>-->
+<!--                        <a class="collapse-item" href="utilities-other.html">Other</a>-->
+                    </div>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'employee_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Employees</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'client_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'ticket_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Tickets</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'task_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Tasks</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'rules' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Terms and Condition</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'client_rules' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Client Terms</span>
+                </a>
+            </li>
+
+            {% elif request.user.groups.first.name == 'employee' %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span> Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_leave_request' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Apply Leave</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_leave_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>My Leaves</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_profile' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>My Profile</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'documents_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>My Documents</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'ticket_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Tickets</span>
+                </a>
+            </li>
+
+             <li class="nav-item">
+                <a class="nav-link" href="{% url 'employee_task_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Tasks</span>
+                </a>
+            </li>
+
+<!--            {% if request.user.groups.first.name == 'manager' %}-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" href="{% url 'ticket_list' %}">-->
+<!--                    <i class="fas fa-fw fa-folder"></i>-->
+<!--                    <span>Tickets</span>-->
+<!--                </a>-->
+<!--            </li>-->
+
+
+<!--            {% else %}-->
+<!--            {% endif %}-->
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'rules' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Terms and Condition</span>
+                </a>
+            </li>
+
+            {% elif request.user.groups.first.name == 'manager' %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span> Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_leave_request' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Apply Leave</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_leave_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>My Leaves</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'my_profile' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>My Profile</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'documents_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>My Documents</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'ticket_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Tickets</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'employee_task_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Tasks</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'rules' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Terms and Condition</span>
+                </a>
+            </li>
+
+
+            {% else %}
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'dashboard' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span> Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'ticket_list' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Tickets</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'client_rules' %}">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Terms and Condition</span>
+                </a>
+            </li>
+            {% endif %}
+
+
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+<!--                Addons-->
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"-->
+<!--                    aria-expanded="true" aria-controls="collapsePages">-->
+<!--                    <i class="fas fa-fw fa-folder"></i>-->
+<!--&lt;!&ndash;                    <span>Pages</span>&ndash;&gt;-->
+<!--                </a>-->
+<!--                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">-->
+<!--                    <div class="bg-white py-2 collapse-inner rounded">-->
+<!--                        <h6 class="collapse-header">Login Screens:</h6>-->
+<!--                        <a class="collapse-item" href="login.html">Login</a>-->
+<!--                        <a class="collapse-item" href="register.html">Register</a>-->
+<!--                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>-->
+<!--                        <div class="collapse-divider"></div>-->
+<!--                        <h6 class="collapse-header">Other Pages:</h6>-->
+<!--                        <a class="collapse-item" href="404.html">404 Page</a>-->
+<!--                        <a class="collapse-item" href="blank.html">Blank Page</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </li>-->
+
+            <!-- Nav Item - Charts -->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" href="charts.html">-->
+<!--                    <i class="fas fa-fw fa-chart-area"></i>-->
+<!--&lt;!&ndash;                    <span>Charts</span></a>&ndash;&gt;-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; Nav Item - Tables &ndash;&gt;-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" href="tables.html">-->
+<!--                    <i class="fas fa-fw fa-table"></i>-->
+<!--&lt;!&ndash;                    <span>Tables</span></a>&ndash;&gt;-->
+<!--            </li>-->
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+            <!-- Sidebar Message -->
+<!--            <div class="sidebar-card d-none d-lg-flex">-->
+<!--                <img class="sidebar-card-illustration mb-2" src="{% static 'img/undraw_rocket.svg' %}" alt="...">-->
+<!--                <p class="text-center mb-2"><strong>SB Admin Pro</strong> is packed with premium features, components, and more!</p>-->
+<!--                <a class="btn btn-success btn-sm" href="https://startbootstrap.com/theme/sb-admin-pro">Upgrade to Pro!</a>-->
+<!--            </div>-->
+
+        </ul>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-success auto-close" style="position: absolute; margin-top: 10px; width: 100%;" role="alert">{{message}}</div>
+                        <div class="topbar-divider d-none d-sm-block"></div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    <!-- Topbar Search -->
+<!--                    <form-->
+<!--                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">-->
+<!--                        <div class="input-group">-->
+<!--                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."-->
+<!--                                aria-label="Search" aria-describedby="basic-addon2">-->
+<!--                            <div class="input-group-append">-->
+<!--                                <button class="btn btn-primary" type="button">-->
+<!--                                    <i class="fas fa-search fa-sm"></i>-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </form>-->
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+<!--                        <li class="nav-item dropdown no-arrow d-sm-none">-->
+<!--                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"-->
+<!--                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                                <i class="fas fa-search fa-fw"></i>-->
+<!--                            </a>-->
+<!--                            &lt;!&ndash; Dropdown - Messages &ndash;&gt;-->
+<!--                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated&#45;&#45;grow-in"-->
+<!--                                aria-labelledby="searchDropdown">-->
+<!--                                <form class="form-inline mr-auto w-100 navbar-search">-->
+<!--                                    <div class="input-group">-->
+<!--                                        <input type="text" class="form-control bg-light border-0 small"-->
+<!--                                            placeholder="Search for..." aria-label="Search"-->
+<!--                                            aria-describedby="basic-addon2">-->
+<!--                                        <div class="input-group-append">-->
+<!--                                            <button class="btn btn-primary" type="button">-->
+<!--                                                <i class="fas fa-search fa-sm"></i>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </li>-->
+
+                        <!-- Nav Item - Alerts -->
+<!--                        <li class="nav-item dropdown no-arrow mx-1">-->
+<!--                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"-->
+<!--                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                                <i class="fas fa-bell fa-fw"></i>-->
+<!--                                &lt;!&ndash; Counter - Alerts &ndash;&gt;-->
+<!--                                <span class="badge badge-danger badge-counter">3+</span>-->
+<!--                            </a>-->
+<!--                            &lt;!&ndash; Dropdown - Alerts &ndash;&gt;-->
+<!--                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated&#45;&#45;grow-in"-->
+<!--                                aria-labelledby="alertsDropdown">-->
+<!--                                <h6 class="dropdown-header">-->
+<!--                                    Alerts Center-->
+<!--                                </h6>-->
+<!--                                <a class="dropdown-item d-flex align-items-center" href="#">-->
+<!--                                    <div class="mr-3">-->
+<!--                                        <div class="icon-circle bg-primary">-->
+<!--                                            <i class="fas fa-file-alt text-white"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div>-->
+<!--                                        <div class="small text-gray-500">December 12, 2019</div>-->
+<!--                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item d-flex align-items-center" href="#">-->
+<!--                                    <div class="mr-3">-->
+<!--                                        <div class="icon-circle bg-success">-->
+<!--                                            <i class="fas fa-donate text-white"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div>-->
+<!--                                        <div class="small text-gray-500">December 7, 2019</div>-->
+<!--                                        $290.29 has been deposited into your account!-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item d-flex align-items-center" href="#">-->
+<!--                                    <div class="mr-3">-->
+<!--                                        <div class="icon-circle bg-warning">-->
+<!--                                            <i class="fas fa-exclamation-triangle text-white"></i>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div>-->
+<!--                                        <div class="small text-gray-500">December 2, 2019</div>-->
+<!--                                        Spending Alert: We've noticed unusually high spending for your account.-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>-->
+<!--                            </div>-->
+<!--                        </li>-->
+
+                        <!-- Nav Item - Messages -->
+<!--                        <li class="nav-item dropdown no-arrow mx-1">-->
+<!--                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"-->
+<!--                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--                                <i class="fas fa-envelope fa-fw"></i>-->
+<!--                                &lt;!&ndash; Counter - Messages &ndash;&gt;-->
+<!--                                <span class="badge badge-danger badge-counter">7</span>-->
+<!--                            </a>-->
+<!--                            &lt;!&ndash; Dropdown - Messages &ndash;&gt;-->
+<!--                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated&#45;&#45;grow-in"-->
+<!--                                aria-labelledby="messagesDropdown">-->
+<!--                                <h6 class="dropdown-header">-->
+<!--                                    Message Center-->
+<!--                                </h6>-->
+<!--                                <a class="dropdown-item d-flex align-items-center" href="#">-->
+<!--                                    <div class="dropdown-list-image mr-3">-->
+<!--                                        <img class="rounded-circle" src="{% static 'img/undraw_profile_1.svg' %}"-->
+<!--                                            alt="...">-->
+<!--                                        <div class="status-indicator bg-success"></div>-->
+<!--                                    </div>-->
+<!--                                    <div class="font-weight-bold">-->
+<!--                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a-->
+<!--                                            problem I've been having.</div>-->
+<!--                                        <div class="small text-gray-500">Emily Fowler · 58m</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item d-flex align-items-center" href="#">-->
+<!--                                    <div class="dropdown-list-image mr-3">-->
+<!--                                        <img class="rounded-circle" src="{% static 'img/undraw_profile_2.svg' %}"-->
+<!--                                            alt="...">-->
+<!--                                        <div class="status-indicator"></div>-->
+<!--                                    </div>-->
+<!--                                    <div>-->
+<!--                                        <div class="text-truncate">I have the photos that you ordered last month, how-->
+<!--                                            would you like them sent to you?</div>-->
+<!--                                        <div class="small text-gray-500">Jae Chun · 1d</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item d-flex align-items-center" href="#">-->
+<!--                                    <div class="dropdown-list-image mr-3">-->
+<!--                                        <img class="rounded-circle" src="{% static 'img/undraw_profile_3.svg' %}"-->
+<!--                                            alt="...">-->
+<!--                                        <div class="status-indicator bg-warning"></div>-->
+<!--                                    </div>-->
+<!--                                    <div>-->
+<!--                                        <div class="text-truncate">Last month's report looks great, I am very happy with-->
+<!--                                            the progress so far, keep up the good work!</div>-->
+<!--                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item d-flex align-items-center" href="#">-->
+<!--                                    <div class="dropdown-list-image mr-3">-->
+<!--                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"-->
+<!--                                            alt="...">-->
+<!--                                        <div class="status-indicator bg-success"></div>-->
+<!--                                    </div>-->
+<!--                                    <div>-->
+<!--                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone-->
+<!--                                            told me that people say this to all dogs, even if they aren't good...</div>-->
+<!--                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>-->
+<!--                            </div>-->
+<!--                        </li>-->
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{request.user}}</span>
+                                {% if request.session.image %}
+                                <img class="img-profile rounded-circle" src = "{{request.session.image}}">
+                                {% else %}
+
+                                <img class="img-profile rounded-circle" src="{% static 'img/undraw_profile.svg' %}">
+                                {% endif %}
+
+                            </a>
+
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                aria-labelledby="userDropdown">
+<!--                                <a class="dropdown-item" href="#">-->
+<!--                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>-->
+<!--                                    Profile-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item" href="#">-->
+<!--                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>-->
+<!--                                    Settings-->
+<!--                                </a>-->
+<!--                                <a class="dropdown-item" href="#">-->
+<!--                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>-->
+<!--                                    Activity Log-->
+<!--                                </a>-->
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+
+{% block content %}
+{% endblock %}
+
+<footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Alponix Pvt Ltd. 2024</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+
+    <!-- Page level plugins -->
+    <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
+    <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+
+        <script>
+// Get all elements with class "auto-close"
+const autoCloseElements = document.querySelectorAll(".auto-close");
+
+// Define a function to handle the fading and sliding animation
+function fadeAndSlide(element) {
+  const fadeDuration = 1000;
+  const slideDuration = 1000;
+
+  // Step 1: Fade out the element
+  let opacity = 1;
+  const fadeInterval = setInterval(function () {
+    if (opacity > 0) {
+      opacity -= 0.1;
+      element.style.opacity = opacity;
+    } else {
+      clearInterval(fadeInterval);
+
+
+      // Step 2: Slide up the element
+      let height = element.offsetHeight;
+      const slideInterval = setInterval(function () {
+        if (height > 0) {
+          height -= 10;
+          element.style.height = height + "px";
+        } else {
+          clearInterval(slideInterval);
+
+
+          // Step 3: Remove the element from the DOM
+          element.parentNode.removeChild(element);
+        }
+
+      }, slideDuration / 10);
+    }
+
+  }, fadeDuration / 10);
+}
+
+
+// Set a timeout to execute the animation after 3500 milliseconds (3.5 seconds)
+setTimeout(function () {
+  autoCloseElements.forEach(function (element) {
+    fadeAndSlide(element);
+  });
+}, 3500);
+</script>
+
+
+    <script>
+
+if ("documentPictureInPicture" in window) {
+
+	let timerContainer = null;
+	let pipWindow = null;
+
+	async function enterPiP() {
+
+	    const timer = document.querySelector("#timer");
+		timerContainer = timer.parentNode;
+		timerContainer.classList.add("pip");
+
+
+<!--	pipWindow.document.body.appendChild(document.getElementById('short-screen').cloneNode(true));-->
+<!--    document.getElementById('short-screen').style.display = 'none'; // Hide the original-->
+
+
+
+		const pipOptions = {
+<!--			initialAspectRatio: timer.clientWidth / timer.clientHeight,-->
+<!--			lockAspectRatio: true,-->
+<!--			copyStyleSheets: true,-->
+
+		};
+
+		pipWindow = await documentPictureInPicture.requestWindow(pipOptions);
+		console.log('testing 3')
+		pipWindow.document.body.append(timer);
+
+
+		// Listen for the PiP closing event to put the timer back.
+		pipWindow.addEventListener("unload", onLeavePiP.bind(pipWindow), {
+			once: true,
+		});
+	}
+
+	// Called when the PiP window has closed.
+	function onLeavePiP() {
+		if (this !== pipWindow) {
+			return;
+		}
+
+		// Add the timer back to the main window.
+<!--		const timer = pipWindow.document.querySelector("#timer");-->
+<!--		timerContainer.append(timer);-->
+<!--		timerContainer.classList.remove("pip");-->
+		pipWindow.close();
+
+		pipWindow = null;
+		timerContainer = null;
+	}
+
+	// button click
+	document.getElementById("popupbtn").addEventListener("click", () => {
+		if (!pipWindow) {
+			enterPiP();
+		} else {
+			onLeavePiP.bind(pipWindow)();
+		}
+	});
+}
+
+
+
+else {
+	let video = document.createElement("video");
+
+	if (document.pictureInPictureEnabled || document.fullscreenEnabled) {
+		document.body.appendChild(video);
+		document.body.appendChild(canvas);
+		canvas.id = "canvas";
+		let stream = canvas.captureStream();
+		video.srcObject = stream;
+		video.autoplay = false;
+		video.controls = true;
+		video.addEventListener("play", () => {
+			if (!roundInfo.running) pauseplay();
+		});
+		video.addEventListener("pause", () => {
+			if (roundInfo.running) pauseplay();
+		});
+		loop();
+
+		video.onenterpictureinpicture = () => {
+			pipActive = true;
+			video.classList.add("pipactive");
+		};
+		video.onleavepictureinpicture = () => {
+			if (document.fullscreenElement) return;
+			pipActive = false;
+			video.classList.remove("pipactive");
+		};
+		video.onfullscreenchange = (ev) => {
+			if (document.fullscreenElement) {
+				pipActive = true;
+				video.classList.add("pipactive");
+			} else {
+				pipActive = false;
+				video.classList.remove("pipactive");
+			}
+		};
+		document.getElementById("popupbtn").addEventListener("click", () => {
+			if (document.pictureInPictureElement) {
+				document.exitPictureInPicture();
+				video.classList.remove("pipactive");
+				return;
+			}
+			if (pipActive) {
+				pipActive = false;
+				video.classList.remove("pipactive");
+				return;
+			}
+			loop();
+			video.play();
+			video.classList.add("pipactive");
+			if (document.pictureInPictureEnabled) {
+				video.requestPictureInPicture();
+			}
+			pipActive = true;
+		});
+	} else {
+		document.getElementById("popupbtn").style.display = "none";
+	}
+}
+</script>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#pipToggleButton').on('click', function() {
+            // Call the pip_data function via AJAX
+            $.ajax({
+                url: '{% url "pip_data" %}',  // Adjust the URL to match your Django URL path for pip_data
+                type: 'GET',
+                success: function(response) {
+                    console.log(response)
+                    // Update ticket and task counts in the UI
+                    $('#ticket-count').text(response.tickets);
+                    $('#task-count').text(response.tasks);
+
+                    // Simulate the click of the "popupbtn" button
+                    $('#popupbtn').click();
+
+                    // Toggle the display of #short-screen div
+                    $('#short-screen').toggle();
+
+
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred while processing the request.');
+                }
+            });
+        });
+
+        // Define the action for the "popupbtn" click
+        $('#popupbtn').on('click', function() {
+            alert("Popup Button (On) Clicked!"); // For demonstration, this can be customized.
+            // You can add any other behavior here when "popupbtn" is clicked.
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

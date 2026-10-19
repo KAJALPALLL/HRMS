@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+
+<h3 class="text-center">Update Leave</h3>
+
+<div class="card p-5 m-3">
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="row">
+
+            {% for data in data %}
+
+            <div class="col-6">
+
+                {{data.leave_type}}:
+                <input value="{{data.leave_type}}" class="form-control" readonly>
+            </div>
+
+            <div class="col-6">
+                Value:
+                <input value="{{data.values}}" name="{{data.values}}" class="form-control">
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+
+         <div class="text-center mt-4">
+            <button class="btn btn-primary" type="submit" value="submit">Update</button>
+        </div>
+
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}
+
+

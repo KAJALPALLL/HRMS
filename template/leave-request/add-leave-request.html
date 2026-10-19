@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+
+<h3 class="text-center">Apply Leave </h3>
+
+<div class="card p-5 m-3">
+    <form method="post">
+        {% csrf_token %}
+
+         <div class="form-group" >
+            Leave Type:
+             <select name="leave_type" class="form-control">
+                 {% for data in leave_type_data %}
+            <option value="{{data.id}}">{{data.name}}</option>
+                 {% endfor %}
+                 </select>
+        </div>
+
+        <div class="form-group">
+            Day Type:
+            <select class="form-control" name="day_type">
+                <option value="full day">Full Day</option>
+                <option value="half day">Half Day</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            Start Date:
+
+            <input name="start_date" type="date" class="form-control">
+
+<!--            {{form.start_date}}-->
+        </div>
+        <div class="form-group">
+            End Date:
+            <input name="end_date" type="date" class="form-control">
+<!--            {{form.end_date}}-->
+        </div>
+
+        <div class="form-group">
+            Leave Reason:
+            <input name="leave_reason" type="text" class="form-control" placeholder="Enter Reason">
+<!--            {{form.leave_reason}}-->
+        </div>
+
+        <input name="employee" type="hidden" value="{{request.user}}">
+
+<!--        <div class="form-group" >-->
+<!--            Status:-->
+<!--            {{form.status}}-->
+<!--        </div>-->
+
+         <div class="text-center">
+            <button class="btn btn-primary" type="submit" value="submit">Submit</button>
+        </div>
+
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}
+
+

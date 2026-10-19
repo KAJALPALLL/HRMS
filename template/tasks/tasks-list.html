@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<h3 class="text-center">Tasks</h3>
+
+{% if not request.user.groups.first.name == 'client' %}
+<div class="row">
+    <div class="col">
+        <a href="{% url 'add_task' %}" style="float:right;margin-right:40px;">
+            <button class="btn btn-primary">Add New</button>
+        </a>
+    </div>
+</div>
+{% else %}
+{% endif %}
+
+<div class="row">
+    <div class="col-4">
+        {% if request.user.is_superuser %}
+<a href="{% url 'task_list' %}">
+    <button class="btn btn-warning ml-5">All</button>
+</a>
+        {% else %}
+        <a href="{% url 'employee_task_list' %}">
+            <button class="btn btn-warning ml-5">All</button>
+        </a>
+        {% endif %}
+<a href="{% url 'open_task_list' %}">
+    <button class="btn btn-danger ">Open Tasks</button>
+</a>
+<a href="{% url 'closed_task_list' %}">
+    <button class="btn btn-success">Closed Tasks</button>
+</a>
+    </div>
+
+    <div class="col-8">
+<div class="m-2">
+        <h6 class="ml-2 font-weight-bold text-primary">Search:
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="" method="get">
+                <div class="input-group">
+                    {{filter.form.id}}
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </h6>
+    </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="container-fluid text-center">
+<div class="card p-3 m-3">
+    <div class="table-responsive">
+        <table class="table table-bordered ">
+            <tr>
+                <th>Tasks Id</th>
+                <th>Description</th>
+                <th>Task Assigned From</th>
+                <th>Task Assigned To</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Image</th>
+                <th>Conversation</th>
+                <th>Time</th>
+                <th>Message</th>
+                {% if request.user.is_superuser %}
+                <th>Actions</th>
+                {% else %}
+                {% endif %}
+
+
+            </tr>
+            {% for data in conversation_data %}
+
+            <tr>
+            <td>{{data.data.id}}</td>
+            <td>{{data.data.description|slice:'0:20'}}...</td>
+
+                <td>
+                    {% for i in data.data.task_assign_from.all %}
+                    <h6>{{i}}</h6>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for i in data.data.task_assign_to.all %}
+                    <h6>{{i}}</h6>
+                    {% endfor %}
+                </td>
+            <td>
+
+                <form method="post" action="{% url 'task_status_update' data.data.id %}">
+                    {% csrf_token %}
+                    <select name="status" onchange="form.submit()">
+                        {% if data.data.status == 'open' %}
+                        <option value="open"selected>Open</option>
+                        <option value="close">Close</option>
+                        {% elif data.data.status == 'close' %}
+                        <option value="close" selected>Close</option>
+                        <option value="open">Open</option>
+                        {% endif %}
+
+                    </select>
+                </form>
+            </td>
+            <td>
+                {% if data.data.priority == '1' %}
+                <h5 class="text-danger">High</h5>
+                {% elif data.data.priority == '2' %}
+                <h5 class="text-warning">Medium</h5>
+                {% elif data.data.priority == '3' %}
+
+                <h5 class="text-secondary">Low</h5>
+                {% else %}
+                {% endif %}
+
+            </td>
+            <td><img src="{{data.data.image.url}}" style="height:40px;width:40px;"></td>
+                <td><a href="{% url 'task_conversation' data.data.id %}"><button class="btn btn-primary">View</button></a></td>
+                <td>{{data.data.datetime}}</td>
+
+                <td class="text-success"> {{data.message}}</td>
+<!--                <td><button class="btn btn-success">replied</button></td>-->
+
+                {% if request.user.is_superuser %}
+                <td>
+                    <a href="{% url 'update_task' data.data.id %}"><i class="fas fa-edit" style="font-size:30px;"></i></a>
+                    <a href="{% url 'delete_task' data.data.id %}"><i class="fas fa-trash" style="color:red;font-size:30px;"></i></a>
+                </td>
+                {% else %}
+                    {% endif %}
+            </tr>
+            {% endfor %}
+
+
+
+        </table>
+    </div>
+</div>
+
+
+<div class="pagination">
+
+    {% if conversation_data.has_previous %}
+    <a href="?page={{conversation_data.previous_page_number}}" class="arrow" id="left"><i class="fas fa-angle-left"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-left"></i></a>
+    {% endif %}
+
+    {% for i in conversation_data.paginator.page_range %}
+    {% if conversation_data.number == i %}
+    <a href="#" class="active">{{i}}</a>
+    {% else %}
+    <a href="#" class="">{{i}}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if conversation_data.has_next %}
+    <a href="?page={{ conversation_data.next_page_number }}" class="arrow" id="right"><i class="fas fa-angle-right"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-right"></i></a>
+    {% endif %}
+
+</div>
+
+
+<style>
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 7px 12px;
+  margin: 0 5px;
+  background-color: #e6ddc4;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #181d31;
+  font-weight: small;
+}
+
+
+.pagination a:hover {
+  background-color:  #0F67B1;
+  color: white;
+}
+
+
+.pagination i {
+  font-size: 18px;
+}
+
+.pagination .active {
+  background-color:  #0F67B1;
+  color: white;
+}
+</style>
+
+
+<script>
+const paginationLinks = document.querySelectorAll(".pagination a");
+let currentIndex = 0;
+
+paginationLinks.forEach((link, index) => {
+  if (link.classList.contains("active")) {
+    currentIndex = index;
+  }
+
+  link.addEventListener("click", () => {
+    if (link.classList.contains("arrow")) {
+      if (link.id === "left") {
+        currentIndex = Math.max(currentIndex 1, 0);
+      } else {
+        currentIndex = Math.min(currentIndex + 1, paginationLinks.length - 2);
+      }
+    } else {
+      currentIndex = index;
+    }
+    paginationLinks.forEach((link) => link.classList.remove("active"));
+    paginationLinks[currentIndex-1].classList.add("active");
+  });
+});
+
+
+</script>
+
+    </div>
+
+{% endblock %}

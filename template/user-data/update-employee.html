@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+
+<h3 class="text-center">Update Employee</h3>
+
+<div class="card p-5 m-3">
+    <form method="post" enctype="multipart/form-data" action="{% url 'update_employee' employee_data.id %}">
+        {% csrf_token %}
+
+
+        <div class="row">
+            <div class="col-md-6">
+                 <div class="form-group" >
+                    Name:
+                    <input class="form-control" type="text" name="name" placeholder="Enter Name" value="{{employee_data.username}}">
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    Father Name:
+                    {{form.father_name}}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" >
+                    Date of Birth:
+                    {{form.date_of_birth}}
+                </div>
+            </div>
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    Email:
+                    <input class="form-control" name="email" type="email" placeholder="Enter Email" value="{{employee_data.email}}">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group" >
+                    Password:
+                    <input class="form-control" name="password" type="password" value="">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                   Gender:
+                    {{form.gender}}
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                   Department:
+                    {{form.department}}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    Calling Number:
+                    {{form.calling_number}}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    Whatsapp Number:
+                    {{form.whatsapp_number}}
+                </div>
+             </div>
+
+             <div class="col-md-4">
+
+                <div class="form-group">
+                    Pan Number:
+                    {{form.pan_number}}
+                </div>
+             </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+             <div class="form-group">
+                Passport Number:
+                {{form.passport_number}}
+            </div>
+            </div>
+
+            <div class="col-md-6">
+             <div class="form-group">
+                Aadhar Number:
+                {{form.aadhar_number}}
+            </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+            <div class="form-group">
+                Status:
+
+                <select name="is_active" class="form-control" value="{{employee_data.is_active}}">
+                    <option value="True">Active</option>
+                    <option value="False">Inactive</option>
+                </select>
+            </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    Address:
+                    {{form.address}}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    State:
+                    {{form.state}}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    City:
+                    {{form.city}}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    Postal Code:
+                    {{form.postal_code}}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    Passport Size Image:
+                    {{form.profile_image}}
+<!--                    <input type="file" name="profile_image" value="{{employee_data.profile_image}}">-->
+                </div>
+            </div>
+        </div>
+
+         <div class="text-center">
+            <button class="btn btn-primary" type="submit" value="submit">Update</button>
+        </div>
+
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}
+
+

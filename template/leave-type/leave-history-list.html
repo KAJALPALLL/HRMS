@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+<h4 class="text-center">Leave History</h4>
+
+<div class="row">
+    <div class="col">
+        {% if request.user.is_superuser %}
+        <a href="{% url 'add_extra_leave' id %}" style="float:right;margin-right:40px;">
+            <button class="btn btn-primary">Add New</button>
+        </a>
+        {% else %}
+        {% endif %}
+
+
+
+    </div>
+</div>
+
+
+
+
+<div class="container-fluid">
+
+<div class="card m-3 text-center p-3">
+    <div class="table-responsive">
+        <table class="table table-bordered ">
+            <tr>
+                <th>Id</th>
+    <!--            <th>Leave Type</th>-->
+                <th>Days</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Added By</th>
+                <th>Datetime</th>
+            </tr>
+
+            {% for data in data %}
+
+            <tr>
+                <td>{{data.id}}</td>
+
+    <!--            <td>{{data.employee_leave_type.leave_type}}</td>-->
+                <td>{{data.value}}</td>
+                {% if data.description == 'approved' %}
+                <td>{{data.employee_leave_type.leave_type}}</td>
+                {% else %}
+                <td>{{data.description}}</td>
+                {% endif %}
+
+                <td>{{data.status}}</td>
+                <td>{{data.added_by}}</td>
+                <td>{{data.datetime}}</td>
+    <!--            <td>-->
+    <!--                <a href="{% url 'update_leave_type' data.id %}"><i class="fa fa-edit" style="font-size:30px;"></i></a>-->
+    <!--                <a href="#" aria-hidden="true" data-toggle="modal" data-target="#myModal{{data.id}}"><i class="fa fa-trash" style="font-size:30px;color:red;"></i></a>-->
+
+
+    <!--             <div class="modal fade" id="myModal{{data.id}}" role="dialog">-->
+    <!--                 <div class="modal-dialog">-->
+    <!--                     <div class="modal-content">-->
+    <!--                         <div class="modal-header">-->
+    <!--                             <h5>Are you sure?</h5>-->
+    <!--                             <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+    <!--                         </div>-->
+    <!--                         <div class="modal-body">-->
+    <!--                             <p>Are you really want to delete the leave type having id = {{data.id}} ?</p>-->
+    <!--                         </div>-->
+    <!--                         <div class="modal-footer">-->
+    <!--                             <div>-->
+    <!--                                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>-->
+    <!--                             </div>-->
+    <!--                             <a  class="btn btn-danger" href="#"><strong>Delete</strong></a></div>-->
+    <!--                     </div>-->
+    <!--                 </div>-->
+    <!--             </div>-->
+    <!--            </td>-->
+            </tr>
+
+            {% endfor %}
+
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

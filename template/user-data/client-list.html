@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<h4 class="text-center">Clients</h4>
+
+<div class="row">
+    <div class="col">
+        <a href="{% url 'client_register' %}" style="float:right;margin-right:40px;">
+            <button class="btn btn-primary">Add New</button>
+        </a>
+    </div>
+</div>
+
+
+
+
+
+<div class="container-fluid">
+
+<div class="card m-3 text-center p-3">
+    <div class="table-responsive">
+    <table class="table table-bordered ">
+        <tr>
+            <th>Id</th>
+            <th>Username</th>
+            <th>Open</th>
+            <th>Closed</th>
+            <th> Tickets</th>
+            <th>Export</th>
+        </tr>
+
+        {% for data in status_ticket_list %}
+
+        <tr>
+            <td>{{data.data.id}}</td>
+            <td>{{data.data.username}}</td>
+            <td>{{data.open_ticket}}</td>
+            <td>{{data.closed_ticket}}</td>
+
+            <td><a href="{% url 'select_department' data.data.id %}"><button class="btn btn-primary">View</button></a></td>
+            <th><a href="{% url 'export_client_report' data.data.id %}"><button class="btn btn-success">Export</button></a></th>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+    </div>
+</div>
+
+
+<div class="pagination">
+
+    {% if status_ticket_list.has_previous %}
+    <a href="?page={{status_ticket_list.previous_page_number}}" class="arrow" id="left"><i class="fas fa-angle-left"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-left"></i></a>
+    {% endif %}
+
+    {% for i in status_ticket_list.paginator.page_range %}
+    {% if status_ticket_list.number == i %}
+    <a href="#" class="active">{{i}}</a>
+    {% else %}
+    <a href="#" class="">{{i}}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if status_ticket_list.has_next %}
+    <a href="?page={{ status_ticket_list.next_page_number }}" class="arrow" id="right"><i class="fas fa-angle-right"></i></a>
+    {% else %}
+    <a href="#" class=""><i class="fas fa-angle-right"></i></a>
+    {% endif %}
+
+</div>
+
+
+<style>
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 7px 12px;
+  margin: 0 5px;
+  background-color: #e6ddc4;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #181d31;
+  font-weight: small;
+}
+
+
+.pagination a:hover {
+  background-color:  #0F67B1;
+  color: white;
+}
+
+
+.pagination i {
+  font-size: 18px;
+}
+
+.pagination .active {
+  background-color:  #0F67B1;
+  color: white;
+}
+</style>
+
+
+<script>
+const paginationLinks = document.querySelectorAll(".pagination a");
+let currentIndex = 0;
+
+paginationLinks.forEach((link, index) => {
+  if (link.classList.contains("active")) {
+    currentIndex = index;
+  }
+
+  link.addEventListener("click", () => {
+    if (link.classList.contains("arrow")) {
+      if (link.id === "left") {
+        currentIndex = Math.max(currentIndex 1, 0);
+      } else {
+        currentIndex = Math.min(currentIndex + 1, paginationLinks.length - 2);
+      }
+    } else {
+      currentIndex = index;
+    }
+    paginationLinks.forEach((link) => link.classList.remove("active"));
+    paginationLinks[currentIndex-1].classList.add("active");
+  });
+});
+
+
+</script>
+
+
+
+</div>
+
+
+{% endblock %}

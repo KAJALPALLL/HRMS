@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+
+<h3 class="text-center">Profile</h3>
+
+<div class="card p-5 m-3">
+    <form method="post" enctype="multipart/form-data">
+
+
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-md-6">
+                 <div class="form-group" >
+                    Name:
+                    <input class="form-control" type="text" name="name" value="{{data.username}}" readonly>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    Father Name:
+                    <input class="form-control" type="text" name="father_name" value="{{data.father_name}}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" >
+                    Date of Birth:
+                    <input class="form-control" type="date" name="date_of_birth" value="{{data.date_of_birth}}" readonly>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    Email:
+                    <input class="form-control" name="email" type="email" value="{{data.email}}" readonly>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group" >
+                    Password:
+                    <input class="form-control" name="password" type="password" value="{{data.password}}" readonly>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                   Gender:
+                    <input class="form-control" name="gender" type="text" value="{{data.gender}}" readonly>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                   Department:
+                    <input class="form-control" name="gender" type="text" value="{{data.department}}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    Calling Number:
+                    <input class="form-control" name="phone_number" type="number" value="{{data.calling_number}}" readonly>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    Whatsapp Number:
+                    <input class="form-control" name="phone_number" type="number" value="{{data.whatsapp_number}}" readonly>
+
+                </div>
+            </div>
+
+             <div class="col-md-4">
+                <div class="form-group">
+                    Pan Number:
+                    <input class="form-control" name="pan_number" type="number" value="{{data.pan_number}}" readonly>
+
+                </div>
+             </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                 <div class="form-group">
+                    Passport Number:
+                     <input class="form-control" name="passport_number" type="number" value="{{data.passport_number}}" readonly>
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                 <div class="form-group">
+                    Aadhar Number:
+                     <input class="form-control" name="aadhar_number" type="number" value="{{data.aadhar_number}}" readonly>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    Status:
+
+                    <select name="is_active" class="form-control" >
+                        <option value="{{data.is_active}}" readonly>{{data.is_active}}</option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    Address:
+                    <input class="form-control" name="address" type="text" value="{{data.address}}" readonly>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    State:
+                    <input class="form-control" name="state" type="text" value="{{data.state}}" readonly>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    City:
+                    <input class="form-control" name="state" type="text" value="{{data.state}}" readonly>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    Postal Code:
+                    <input class="form-control" name="state" type="text" value="{{data.state}}" readonly>
+
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    Passport Size Photo:
+                    <input class="form-control" name="profile_image" type="file" value="{{data.profile_image}}" readonly>
+
+                </div>
+            </div>
+        </div>
+
+<!--         <div class="text-center">-->
+<!--            <button class="btn btn-primary" type="submit" value="submit">Submit</button>-->
+<!--        </div>-->
+
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}
+
+

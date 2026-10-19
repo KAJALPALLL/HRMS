@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+<h3 class="text-center">Update Task{% for i in task_data.employee.all %}{{i}}{% endfor %}</h3>
+
+
+<div class="card m-3 p-3">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+
+        <div class="form-group">
+            Description:
+            {{form.description}}
+        </div>
+
+         <div class="form-group">
+            Priority:
+            {{form.priority}}
+        </div>
+        Task Assign to :
+        {% for i in task_data.task_manager.all %}{{i}}{% endfor %}
+
+         <div class="form-group">
+            Select Image ( Provide image which helps us to solve the exact issue ) :
+            {{form.image}}
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-primary">Update</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" style="margin-left:20px;cursor:pointer;" onclick="history.back();"><path fill="currentColor" d="M20 11v2H8l5.5 5.5l-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5L8 11z"/></svg>
+
+
+<h3 class="text-center">Tickets</h3>
+
+
+<div class="container-fluid text-center">
+<div class="card p-3 m-3">
+    <div class="table-responsive">
+        <table class="table table-bordered ">
+            <tr>
+                <th>Ticket Id</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Image</th>
+                <th>Conversation</th>
+                <th>Datetime</th>
+
+
+            </tr>
+
+            <tr>
+                {% for data in data %}
+
+
+            <td>{{data.id}}</td>
+            <td>{{data.description}}</td>
+
+                <td>
+                <form method="post" action="{% url 'update_ticket_status' data.id %}">
+                    {% csrf_token %}
+                    <select name="status" onchange="form.submit()">
+                        {% if data.status == 'open' %}
+                        <option value="open"selected>Open</option>
+                        <option value="close">Close</option>
+                        {% elif data.status == 'close' %}
+                        <option value="close" selected>Close</option>
+                        <option value="open">Open</option>
+                        {% endif %}
+
+                    </select>
+                </form>
+            </td>
+            <td>
+                {% if data.priority == 1 %}
+                <button class="btn btn-danger">High</button>
+                {% elif data.priority == 2 %}
+                <button class="btn btn-warning">Medium</button>
+                {% else %}
+                <button class="btn btn-secondary">Low</button>
+                {% endif %}
+
+            </td>
+            <td><img src="{{data.image.url}}" style="height:40px;width:40px;"></td>
+                <td><a href="{% url 'conversation' data.id %}"><button class="btn btn-primary">View</button></a></td>
+                <td>{{data.datetime}}</td>
+            </tr>
+            {% endfor %}
+
+
+        </table>
+    </div>
+</div>
+    </div>
+
+{% endblock %}
